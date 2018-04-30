@@ -2,18 +2,18 @@ package quicksort
 
 func SlicePartition(a []int) int {
 	pivot := a[len(a)-1]
+	split := 0
 
-	i := -1
-	for j := range a {
-		if a[j] < pivot {
-			i++
-			a[i], a[j] = a[j], a[i]
+	for i := range a {
+		if a[i] >= pivot {
+			continue
 		}
+		a[split], a[i] = a[i], a[split]
+		split++
 	}
 
-	i++
-	a[i], a[len(a)-1] = a[len(a)-1], a[i]
-	return i
+	a[split], a[len(a)-1] = a[len(a)-1], a[split]
+	return split
 }
 
 func SliceSort(a []int) {
