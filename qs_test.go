@@ -7,7 +7,6 @@ import (
 )
 
 func BenchmarkSorts(b *testing.B) {
-
 	sorters := []struct {
 		Name string
 		Func func([]int)
@@ -17,11 +16,12 @@ func BenchmarkSorts(b *testing.B) {
 		{Name: "Concurrent", Func: ConcurSort},
 	}
 	// generate random data
-	randomSlice := func(c int) (rc []int) {
+	randomSlice := func(c int) []int {
+		rc := make([]int, c, c)
 		for i := 0; i < c; i++ {
-			rc = append(rc, rand.Intn(100))
+			rc[i] = rand.Intn(c)
 		}
-		return
+		return rc
 	}
 
 	for i := 2; i < (1 << 25); i = i << 1 {

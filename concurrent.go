@@ -1,5 +1,9 @@
 package quicksort
 
+import (
+	"sync"
+)
+
 func ConcurPartition(a []int) int {
 	pivot := a[len(a)-1]
 
@@ -17,23 +21,22 @@ func ConcurPartition(a []int) int {
 }
 
 func ConcurSort(a []int) {
-	c := make(chan struct{}, 2)
-	go concurSort(a, c)
-	<-c
+	w := sync.WaitGroup{}
+	w.Add(1)
+	go concurSort(a, &w)
+	w.Wait()
 }
 
-func concurSort(a []int, d chan<- struct{}) {
+func concurSort(a []int, wg *sync.WaitGroup) {
+	defer wg.Done()
 	if len(a) == 0 {
-		d <- struct{}{}
 		return
 	}
 
 	p := ConcurPartition(a)
 
-	done := make(chan struct{})
-	go concurSort(a[:p], done)
-	go concurSort(a[p+1:], done)
-	<-done
-	<-done
-	d <- struct{}{}
+	w := sync.WaitGroup{}
+	w.Add(2)
+	go concurSort(a[:p], &w)
+	go concurSort(a[p+1:], &w)
 }
