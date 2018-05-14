@@ -26,11 +26,12 @@ func BenchmarkSorts(b *testing.B) {
 
 	for i := 2; i < (1 << 25); i = i << 1 {
 		nums := randomSlice(i)
+		td := make([]int, len(nums), len(nums))
 		b.Run(strconv.Itoa(i), func(b *testing.B) {
 			for _, method := range sorters {
-				td := make([]int, len(nums))
-				copy(td, nums)
 				b.Run(method.Name, func(b *testing.B) {
+					copy(td, nums)
+					b.ResetTimer()
 					for i := 0; i < b.N; i++ {
 						method.Func(td)
 					}
